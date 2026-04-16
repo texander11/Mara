@@ -1,0 +1,85 @@
+/* ═══════════════════════════════════════════════
+   Super Hamburguesas Mara — Estilos personalizados
+   (Tailwind CDN maneja las clases utilitarias)
+═══════════════════════════════════════════════ */
+
+/* ─── Iconos Material Symbols ─────────────────── */
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+.fill-icon {
+  font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+/* ─── Base ─────────────────────────────────────── */
+body {
+  font-family: 'Be Vietnam Pro', sans-serif;
+  background-color: #fff8f7;
+  min-height: 100dvh;
+}
+h1, h2, h3, h4, .font-headline {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+/* ─── Scrollbar oculto ─────────────────────────── */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* ─── Vistas (SPA routing) ─────────────────────── */
+.view { display: none; }
+.view.active { display: block; }
+
+/* ─── Modal de personalización ─────────────────── */
+#modal-overlay {
+  transition: opacity 0.25s ease;
+}
+#modal-panel {
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.25s ease;
+  transform: translateY(100%);
+  opacity: 0;
+}
+#modal-panel.modal-open {
+  transform: translateY(0);
+  opacity: 1;
+}
+@media (min-width: 768px) {
+  #modal-panel {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  #modal-panel.modal-open {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* ─── Toast ────────────────────────────────────── */
+#toast {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* ─── Category chips ───────────────────────────── */
+.chip-active  { background-color: #ffb702; color: #271900; }
+.chip-inactive { background-color: #ffe1e0; color: #5b403f; }
+
+/* ─── Checkbox ─────────────────────────────────── */
+input[type=checkbox]:checked { accent-color: #b7102a; }
+
+/* ─── Tarjetas de pago ─────────────────────────── */
+.pay-card {
+  border: 2px solid transparent;
+  transition: border-color 0.2s;
+}
+.pay-card.selected { border-color: #b7102a; }
+
+/* ─── Botones de cantidad ──────────────────────── */
+.qty-btn {
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  transition: background 0.15s;
+}
+.qty-btn:hover { background: #ffdad8; }
