@@ -22,7 +22,7 @@ const MENU = [
   { id:14, cat:'LOMITOS', name:'Lomito árabe carne cheddar',     price:24000, emoji:'🌯', ingredients:[] },
   { id:15, cat:'LOMITOS', name:'Lomito árabe súper carne',       price:24000, emoji:'🌯', ingredients:[] },
   // PIZZAS
-  { id:16, cat:'PIZZAS', name:'Pepperoni',                       price:35000, emoji:'🍕', ingredients:[] },
+  { id:16, cat:'PIZZAS', name:'Pepperoni',                       price:35000, emoji:'🍕', img:'pizza-pepperoni_web.jpg', ingredients:[] },
   { id:17, cat:'PIZZAS', name:'Jamón y queso',                   price:35000, emoji:'🍕', ingredients:[] },
   { id:18, cat:'PIZZAS', name:'Catu pollo',                      price:35000, emoji:'🍕', ingredients:[] },
   { id:19, cat:'PIZZAS', name:'Catu choclo',                     price:35000, emoji:'🍕', ingredients:[] },
@@ -99,8 +99,11 @@ function renderProductGrid(cat) {
   const products = MENU.filter(p => p.cat === cat);
   grid.innerHTML = products.map(p => `
     <div class="group bg-surface-container-lowest rounded-xl p-5 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col">
-      <div class="w-full h-36 rounded-xl ${CATEGORY_COLORS[p.cat]} flex items-center justify-center text-7xl mb-4 group-hover:scale-105 transition-transform duration-300">
-        ${p.emoji}
+      <div class="w-full h-36 rounded-xl ${CATEGORY_COLORS[p.cat]} flex items-center justify-center text-7xl mb-4 overflow-hidden group-hover:scale-105 transition-transform duration-300">
+        ${p.img
+          ? `<img src="${p.img}" alt="${p.name}" class="w-full h-full object-cover rounded-xl"/>`
+          : p.emoji
+        }
       </div>
       <div class="flex-1 flex flex-col">
         <h3 class="font-headline font-bold text-on-surface text-base mb-1 leading-tight">${p.name}</h3>
@@ -140,10 +143,15 @@ function openModal(productId) {
   document.getElementById('modal-qty').textContent          = '1';
   updateModalTotalPrice();
 
-  // Área de ícono con color de categoría
+  // Área de ícono con color de categoría o imagen
   const iconArea = document.getElementById('modal-icon-area');
-  iconArea.className  = `w-full h-28 rounded-xl flex items-center justify-center text-6xl mb-5 ${CATEGORY_COLORS[p.cat]}`;
-  iconArea.textContent = p.emoji;
+  if (p.img) {
+    iconArea.className   = `w-full h-28 rounded-xl overflow-hidden mb-5`;
+    iconArea.innerHTML   = `<img src="${p.img}" alt="${p.name}" class="w-full h-full object-cover"/>`;
+  } else {
+    iconArea.className   = `w-full h-28 rounded-xl flex items-center justify-center text-6xl mb-5 ${CATEGORY_COLORS[p.cat]}`;
+    iconArea.textContent = p.emoji;
+  }
 
   // Ingredientes con checkboxes
   const section   = document.getElementById('modal-ingredients-section');
