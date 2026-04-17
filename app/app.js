@@ -49,6 +49,14 @@ const CATEGORY_COLORS = {
 };
 
 const WHATSAPP_NUMBER = '595971954958';
+const SAUCE_PRICE = 1000;
+const SAUCES = [
+  { id:'ajo',     name:'Ajo',     emoji:'🧄' },
+  { id:'choclo',  name:'Choclo',  emoji:'🌽' },
+  { id:'picante', name:'Picante', emoji:'🌶️' },
+  { id:'ketchup', name:'Ketchup', emoji:'🍅' },
+  { id:'mostaza', name:'Mostaza', emoji:'💛' },
+];
 
 // ─── ESTADO GLOBAL ───────────────────────────────
 let cart          = [];
@@ -61,6 +69,7 @@ let deliveryType  = 'delivery'; // 'delivery' | 'takeaway'
 let modalProduct    = null;
 let modalQty        = 1;
 let modalIngredients = []; // [{ name, checked }]
+let modalSauces     = {}; // { sauceId: qty }
 
 // ─── INICIALIZACIÓN ──────────────────────────────
 function init() {
@@ -137,6 +146,7 @@ function openModal(productId) {
   modalProduct     = p;
   modalQty         = 1;
   modalIngredients = p.ingredients.map(ing => ({ name: ing, checked: true }));
+  modalSauces      = {}; // resetear salsas
 
   document.getElementById('modal-category').textContent     = p.cat;
   document.getElementById('modal-name').textContent         = p.name;
@@ -171,6 +181,29 @@ function openModal(productId) {
     container.innerHTML = '';
   }
 
+  // Renderizar salsas extra
+  const saucesContainer = document.getElementById('modal-sauces');
+  saucesContainer.innerHTML = SAUCES.map(s => `
+    <div class="flex items-center justify-between bg-surface-container-low rounded-xl px-4 py-3">
+      <div class="flex items-center gap-3">
+        <span class="text-2xl">${s.emoji}</span>
+        <div>
+          <span class="font-body font-semibold text-sm">${s.name}</span>
+          <span class="text-xs text-on-surface-variant ml-1">+1.000 Gs c/u</span>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <button onclick="changeSauceQty('${s.id}', -1)" class="qty-btn text-primary">
+          <span class="material-symbols-outlined text-lg">remove</span>
+        </button>
+        <span id="sauce-qty-${s.id}" class="font-headline font-bold text-sm w-6 text-center">0</span>
+        <button onclick="changeSauceQty('${s.id}', 1)" class="qty-btn text-primary">
+          <span class="material-symbols-outlined text-lg">add</span>
+        </button>
+      </div>
+    </div>
+  `).join('');
+
   // Mostrar overlay
   const overlay = document.getElementById('modal-overlay');
   const panel   = document.getElementById('modal-panel');
@@ -193,6 +226,15 @@ function toggleIngredient(index) {
   modalIngredients[index].checked = !modalIngredients[index].checked;
 }
 
+function changeSauceQty(sauceId, delta) {
+  const current = modalSauces[sauceId] || 0;
+  const next = Math.max(0, current + delta);
+  modalSauces[sauceId] = next;
+  const el = document.getElementById('sauce-qty-' + sauceId);
+  if (el) el.textContent = next;
+  updateModalTotalPrice();
+}
+
 function changeModalQty(delta) {
   modalQty = Math.max(1, modalQty + delta);
   document.getElementById('modal-qty').textContent = modalQty;
@@ -201,21 +243,31 @@ function changeModalQty(delta) {
 
 function updateModalTotalPrice() {
   if (!modalProduct) return;
-  document.getElementById('modal-total-price').textContent = fmtPrice(modalProduct.price * modalQty);
+  const sauceCost = Object.values(modalSauces).reduce((sum, qty) => sum + qty * SAUCE_PRICE, 0);
+  const total = (modalProduct.price + sauceCost) * modalQty;
+  document.getElementById('modal-total-price').textContent = fmtPrice(total);
 }
 
 function addToCartFromModal() {
   if (!modalProduct) return;
   const removed = modalIngredients.filter(i => !i.checked).map(i => i.name);
-  addToCart(modalProduct, modalQty, removed);
+  // Salsas seleccionadas (qty > 0)
+  const selectedSauces = SAUCES
+    .filter(s => (modalSauces[s.id] || 0) > 0)
+    .map(s => ({ name: s.name, qty: modalSauces[s.id] }));
+  const sauceCost = selectedSauces.reduce((sum, s) => sum + s.qty * SAUCE_PRICE, 0);
+  const finalPrice = modalProduct.price + sauceCost;
+
+  addToCart(modalProduct, modalQty, removed, selectedSauces, finalPrice);
   closeModal();
   showToast(`¡${modalProduct.name} agregado!`);
 }
 
 // ─── CARRITO ─────────────────────────────────────
-function addToCart(product, qty, removedIngredients) {
-  // Agrupar si ya existe el mismo producto con los mismos ingredientes removidos
-  const key      = product.id + '|' + removedIngredients.sort().join(',');
+function addToCart(product, qty, removedIngredients, sauces = [], finalPrice = null) {
+  const price = finalPrice !== null ? finalPrice : product.price;
+  const saucesKey = sauces.map(s => s.name + 'x' + s.qty).join(',');
+  const key = product.id + '|' + removedIngredients.sort().join(',') + '|' + saucesKey;
   const existing = cart.find(item => item.key === key);
   if (existing) {
     existing.qty += qty;
@@ -224,11 +276,12 @@ function addToCart(product, qty, removedIngredients) {
       key,
       productId: product.id,
       name:      product.name,
-      price:     product.price,
+      price,
       emoji:     product.emoji,
       cat:       product.cat,
       qty,
       removed:   removedIngredients,
+      sauces,
     });
   }
   saveCart();
@@ -296,7 +349,10 @@ function renderCart() {
 
   itemsEl.innerHTML = cart.map(item => {
     const sinText = item.removed.length > 0
-      ? '<span class="text-xs text-primary font-semibold">sin ' + item.removed.join(', sin ') + '</span>'
+      ? '<span class="text-xs text-primary font-semibold block">sin ' + item.removed.join(', sin ') + '</span>'
+      : '';
+    const saucesText = (item.sauces && item.sauces.length > 0)
+      ? '<span class="text-xs text-secondary font-semibold block">+ ' + item.sauces.map(s => s.name + ' x' + s.qty).join(', ') + '</span>'
       : '';
     const subtotal = item.price * item.qty;
     return `
@@ -307,6 +363,7 @@ function renderCart() {
         <div class="flex-1 min-w-0">
           <h3 class="font-headline font-bold text-on-surface text-sm leading-tight">${item.name}</h3>
           ${sinText}
+          ${saucesText}
           <p class="font-headline font-extrabold text-primary text-base mt-1">${fmtPrice(subtotal)}</p>
         </div>
         <div class="flex flex-col items-end gap-2 flex-shrink-0">
@@ -348,9 +405,11 @@ function renderPayment() {
   const list = document.getElementById('payment-order-list');
   list.innerHTML = cart.map(item => {
     const sinText = item.removed.length > 0 ? ' (sin ' + item.removed.join(', ') + ')' : '';
+    const saucesText = (item.sauces && item.sauces.length > 0)
+      ? ' [+ ' + item.sauces.map(s => s.name + ' x' + s.qty).join(', ') + ']' : '';
     return `
       <div class="flex justify-between items-start gap-2">
-        <span class="text-on-surface-variant flex-1">${item.qty}x ${item.name}${sinText}</span>
+        <span class="text-on-surface-variant flex-1">${item.qty}x ${item.name}${sinText}${saucesText}</span>
         <span class="font-bold text-on-surface flex-shrink-0">${fmtPrice(item.price * item.qty)}</span>
       </div>
     `;
@@ -483,8 +542,10 @@ function sendWhatsApp() {
   // Productos
   cart.forEach(item => {
     const sinText = item.removed.length > 0 ? ' (sin ' + item.removed.join(', ') + ')' : '';
+    const saucesText = (item.sauces && item.sauces.length > 0)
+      ? ' [+ ' + item.sauces.map(s => s.name + ' x' + s.qty).join(', ') + ']' : '';
     const qtyText = item.qty > 1 ? item.qty + 'x ' : '';
-    lines += qtyText + item.name + sinText + '\n';
+    lines += qtyText + item.name + sinText + saucesText + '\n';
   });
 
   lines += '\n💰 Total productos: ' + fmt(total) + '\n';
