@@ -225,9 +225,15 @@
 ═══════════════════════════════════════════════ -->
 <main id="view-cart" class="view pb-32">
   <div class="max-w-4xl mx-auto px-4 md:px-8 py-8">
-    <div class="mb-8">
-      <span class="font-label text-[11px] uppercase tracking-widest text-secondary font-bold">Tu pedido</span>
-      <h1 class="font-headline text-4xl font-extrabold text-on-surface tracking-tight mt-1">Mi Carrito</h1>
+    <div class="mb-8 flex items-end justify-between">
+      <div>
+        <span class="font-label text-[11px] uppercase tracking-widest text-secondary font-bold">Tu pedido</span>
+        <h1 class="font-headline text-4xl font-extrabold text-on-surface tracking-tight mt-1">Mi Carrito</h1>
+      </div>
+      <button onclick="clearCart()" id="btn-clear-cart" class="hidden flex items-center gap-1.5 text-xs font-bold text-error hover:bg-error/10 px-3 py-2 rounded-xl transition-colors">
+        <span class="material-symbols-outlined text-base">delete_sweep</span>
+        Vaciar
+      </button>
     </div>
 
     <div id="cart-empty" class="hidden flex flex-col items-center justify-center py-20 text-center">

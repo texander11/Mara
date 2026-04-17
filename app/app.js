@@ -295,6 +295,15 @@ function removeFromCart(key) {
   renderCart();
 }
 
+function clearCart() {
+  if (cart.length === 0) return;
+  cart = [];
+  saveCart();
+  updateCartUI();
+  renderCart();
+  showToast('Carrito vaciado');
+}
+
 function changeCartQty(key, delta) {
   const item = cart.find(i => i.key === key);
   if (!item) return;
@@ -339,6 +348,7 @@ function renderCart() {
     emptyEl.classList.add('flex');
     itemsEl.classList.add('hidden');
     summaryEl.classList.add('hidden');
+    document.getElementById('btn-clear-cart')?.classList.add('hidden');
     return;
   }
 
@@ -346,6 +356,7 @@ function renderCart() {
   emptyEl.classList.remove('flex');
   itemsEl.classList.remove('hidden');
   summaryEl.classList.remove('hidden');
+  document.getElementById('btn-clear-cart')?.classList.remove('hidden');
 
   itemsEl.innerHTML = cart.map(item => {
     const sinText = item.removed.length > 0
