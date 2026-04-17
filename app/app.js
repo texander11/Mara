@@ -5,14 +5,14 @@
 // ─── DATOS DEL MENÚ ──────────────────────────────
 const MENU = [
   // HAMBURGUESAS
-  { id:1,  cat:'HAMBURGUESAS', name:'Hamburguesa simple',        price:8000,  emoji:'🍔', img:'simple.png',               ingredients:['pan','condimentos','tomate','carne','huevo','queso'] },
-  { id:2,  cat:'HAMBURGUESAS', name:'Hamburguesa especial',      price:9000,  emoji:'🍔', img:'especial.jpg',             ingredients:['pan','condimentos','tomate','huevo','cebolla','queso'] },
-  { id:3,  cat:'HAMBURGUESAS', name:'Hamburguesa con cheddar',   price:10000, emoji:'🍔', img:'con cheddar.png',          ingredients:['pan','condimentos','tomate','cebolla','queso','huevo'] },
-  { id:4,  cat:'HAMBURGUESAS', name:'Hamburguesa doble carne',   price:12000, emoji:'🍔', img:'doble.jpg',                ingredients:['pan','condimentos','doble carne','huevo','tomate','queso'] },
-  { id:5,  cat:'HAMBURGUESAS', name:'Súper hamburguesa',         price:13000, emoji:'🍔', img:'super h.jpg',              ingredients:['pan','condimentos','tomate','cebolla','queso','huevo'] },
-  { id:6,  cat:'HAMBURGUESAS', name:'Doble carne con cheddar',   price:14000, emoji:'🍔', img:'doble.jpg',                ingredients:['pan','condimentos','doble carne','cheddar','huevo','tomate'] },
-  { id:7,  cat:'HAMBURGUESAS', name:'Súper con cheddar',         price:15000, emoji:'🍔', img:'con cheddar.png',          ingredients:['pan','condimentos','tomate','cebolla','cheddar','huevo'] },
-  { id:8,  cat:'HAMBURGUESAS', name:'Triple carne',              price:18000, emoji:'🍔', img:'triple.jpeg',              ingredients:['pan','condimentos','triple carne','huevo','tomate','queso'] },
+  { id:1,  cat:'HAMBURGUESAS', name:'Hamburguesa simple',        price:8000,  emoji:'🍔', img:'simple.png',               ingredients:['condimentos','tomate','carne','huevo','queso'] },
+  { id:2,  cat:'HAMBURGUESAS', name:'Hamburguesa especial',      price:9000,  emoji:'🍔', img:'especial.jpg',             ingredients:['condimentos','tomate','huevo','cebolla','queso'] },
+  { id:3,  cat:'HAMBURGUESAS', name:'Hamburguesa con cheddar',   price:10000, emoji:'🍔', img:'con cheddar.png',          ingredients:['condimentos','tomate','cebolla','queso','huevo'] },
+  { id:4,  cat:'HAMBURGUESAS', name:'Hamburguesa doble carne',   price:12000, emoji:'🍔', img:'doble.jpg',                ingredients:['condimentos','huevo','tomate','queso'] },
+  { id:5,  cat:'HAMBURGUESAS', name:'Súper hamburguesa',         price:13000, emoji:'🍔', img:'super h.jpg',              ingredients:['condimentos','tomate','cebolla','queso','huevo'] },
+  { id:6,  cat:'HAMBURGUESAS', name:'Doble carne con cheddar',   price:14000, emoji:'🍔', img:'doble.jpg',                ingredients:['condimentos','cheddar','huevo','tomate'] },
+  { id:7,  cat:'HAMBURGUESAS', name:'Súper con cheddar',         price:15000, emoji:'🍔', img:'con cheddar.png',          ingredients:['condimentos','tomate','cebolla','cheddar','huevo'] },
+  { id:8,  cat:'HAMBURGUESAS', name:'Triple carne',              price:18000, emoji:'🍔', img:'triple.jpeg',              ingredients:['condimentos','huevo','tomate','queso'] },
   // LOMITOS
   { id:9,  cat:'LOMITOS', name:'Lomito árabe mixto',             price:18000, emoji:'🌯', img:'lomito arabe.jpeg',        ingredients:[] },
   { id:10, cat:'LOMITOS', name:'Lomito árabe de pollo',          price:18000, emoji:'🌯', img:'arabe de pollo.jpg',       ingredients:[] },
